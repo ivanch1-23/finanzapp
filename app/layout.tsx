@@ -5,6 +5,7 @@ import { BottomNav } from '@/components/BottomNav'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { SplashScreen } from '@/components/SplashScreen'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthChecker } from '@/components/AuthChecker'
 import './globals.css'
 
 export default function RootLayout({
@@ -44,6 +45,7 @@ export default function RootLayout({
               <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-teal-300/20 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '1s' }} />
             </div>
             <SplashScreen isVisible={isLoading} />
+            <AuthChecker />
             {children}
           </AuthProvider>
         </ThemeProvider>
