@@ -51,30 +51,29 @@ export function TransactionForm() {
     <StaggerContainer className="space-y-5">
       <StaggerItem>
         <div className="relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 p-1.5">
-          <div
-            className="absolute inset-y-1.5 rounded-xl bg-white dark:bg-slate-700 shadow-sm transition-all duration-300 ease-out"
-            style={{
-              left: '6px',
-              right: '6px',
-              width: 'calc(50% - 12px)',
-              transform: type === 'expense' ? 'translateX(0)' : 'translateX(100%)',
-            }}
-          />
           <div className="relative grid grid-cols-2 gap-1">
-            {(['expense', 'income'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setType(t)}
-                className={`relative z-10 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-colors ${
-                  type === t
-                    ? t === 'expense' ? 'text-sky-600 dark:text-sky-400' : 'text-teal-600 dark:text-teal-400'
-                    : 'text-slate-500 dark:text-slate-400'
-                }`}
-              >
-                {t === 'expense' ? '↓ Gasto' : '↑ Ingreso'}
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={() => setType('expense')}
+              className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+                type === 'expense'
+                  ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+              }`}
+            >
+              ↓ Gasto
+            </button>
+            <button
+              type="button"
+              onClick={() => setType('income')}
+              className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+                type === 'income'
+                  ? 'bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-400 shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+              }`}
+            >
+              ↑ Ingreso
+            </button>
           </div>
         </div>
       </StaggerItem>

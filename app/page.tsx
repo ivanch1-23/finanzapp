@@ -16,7 +16,6 @@ import Link from 'next/link'
 import { isSameMonth } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { SavingsCard } from '@/components/SavingsCard'
-import { ReminderChart } from '@/components/ReminderChart'
 
 export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date())
@@ -181,13 +180,6 @@ export default function Home() {
         {/* Savings Card - Glassmorphism */}
         <FadeIn delay={0.17}>
           <SavingsCard />
-        </FadeIn>
-
-        {/* PROXIMOS PAGOS - Chart */}
-        <FadeIn delay={0.2}>
-          <div className="backdrop-blur-xl bg-white/60 dark:bg-slate-800/60 border border-white/20 dark:border-white/10 rounded-[2rem] p-4 shadow-glass">
-            <ReminderChart selectedMonth={selectedMonth} />
-          </div>
         </FadeIn>
 
         {/* PROXIMOS PAGOS - List */}
