@@ -1,6 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr'
 
-let supabaseClient: ReturnType<typeof createBrowserClient> | null = null
+let supabaseClient: ReturnType<typeof createBrowserClient> | undefined = undefined
 
 export function createClient() {
   if (supabaseClient) return supabaseClient
@@ -9,13 +9,17 @@ export function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Supabase credentials not configured. Using fallback.')
-    return createBrowserClient(
-      'https://placeholder.supabase.co',
-      'placeholder-key'
-    )
+    throw new Error('Missing Supabase environment variables')
   }
 
   supabaseClient = createBrowserClient(supabaseUrl, supabaseAnonKey)
   return supabaseClient
+}
+
+export function getSupabaseUrl() {
+  return process.env.NEXT_PUBLIC_SUPABASE_URL
+}
+
+export function getSupabaseAnonKey() {
+  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 }

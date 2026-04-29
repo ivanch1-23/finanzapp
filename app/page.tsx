@@ -15,6 +15,8 @@ import { formatCOP } from '@/components/Animations'
 import Link from 'next/link'
 import { isSameMonth } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date())
 
