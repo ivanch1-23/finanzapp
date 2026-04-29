@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { isSameMonth } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { SavingsCard } from '@/components/SavingsCard'
+import { ReminderChart } from '@/components/ReminderChart'
 
 export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date())
@@ -182,11 +183,18 @@ export default function Home() {
           <SavingsCard />
         </FadeIn>
 
-        {/* PROXIMOS PAGOS - Glass Panel */}
+        {/* PROXIMOS PAGOS - Chart */}
         <FadeIn delay={0.2}>
           <div className="backdrop-blur-xl bg-white/60 dark:bg-slate-800/60 border border-white/20 dark:border-white/10 rounded-[2rem] p-4 shadow-glass">
+            <ReminderChart selectedMonth={selectedMonth} />
+          </div>
+        </FadeIn>
+
+        {/* PROXIMOS PAGOS - List */}
+        <FadeIn delay={0.22}>
+          <div className="backdrop-blur-xl bg-white/60 dark:bg-slate-800/60 border border-white/20 dark:border-white/10 rounded-[2rem] p-4 shadow-glass">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Próximos pagos</h2>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Detalle</h2>
               <Link href="/reminders" className="flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline">
                 Ver todo <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
               </Link>

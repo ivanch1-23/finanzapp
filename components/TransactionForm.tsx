@@ -4,18 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTransactionStore } from '@/stores/transactions'
 import { useAuth } from '@/contexts/AuthContext'
-import { CATEGORIES } from '@/lib/types'
-import type { TransactionType, Category } from '@/lib/types'
+import { DEFAULT_CATEGORIES } from '@/lib/types'
+import type { TransactionType } from '@/lib/types'
 import { DollarSign, Tag, Calendar, Repeat, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from './Animations'
+import { CategorySelector } from './CategorySelector'
 
 export function TransactionForm() {
   const router = useRouter()
   const { user } = useAuth()
   const [amount, setAmount] = useState('')
   const [title, setTitle] = useState('')
-  const [category, setCategory] = useState<Category>(CATEGORIES[0])
+  const [category, setCategory] = useState<string>(DEFAULT_CATEGORIES[0].name)
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [type, setType] = useState<TransactionType>('expense')
   const [isRecurring, setIsRecurring] = useState(false)
@@ -42,7 +43,7 @@ export function TransactionForm() {
     setSaving(false)
     setSuccess(true)
     setTimeout(() => {
-      router.push('/')
+      router.replace('/')
     }, 500)
   }
 
@@ -97,7 +98,7 @@ export function TransactionForm() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="🍎 Compras del mercado"
+            placeholder="Descripción del gasto"
             className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30"
           />
         </div>
@@ -105,24 +106,7 @@ export function TransactionForm() {
 
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Categoría</label>
-        <div className="grid grid-cols-3 gap-2">
-          {CATEGORIES.map((cat) => (
-            <motion.button
-              key={cat}
-              type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setCategory(cat)}
-              className={`rounded-xl border px-3 py-2.5 text-[11px] font-bold transition-all ${
-                category === cat
-                  ? 'border-sky-400 bg-sky-100 text-sky-600 dark:border-sky-500 dark:bg-sky-900/30 dark:text-sky-400'
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:border-sky-300 dark:hover:border-sky-600'
-              }`}
-            >
-              {cat}
-            </motion.button>
-          ))}
-        </div>
+        <CategorySelector value={category} onChange={setCategory as (cat: string) => void} />
       </StaggerItem>
 
       <StaggerItem>
@@ -184,7 +168,6 @@ export function TransactionForm() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex items-center justify-center gap-2"
               >
                 ✓ Redirigiendo...
               </motion.span>

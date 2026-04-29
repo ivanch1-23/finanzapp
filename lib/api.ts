@@ -1,5 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr'
-import type { Transaction, Reminder, Goal } from './types'
+import type { Transaction, Reminder, Goal, Category } from './types'
 import { createClient as createSupabaseClient } from './supabase/client'
 
 function getClient() {
@@ -217,6 +217,60 @@ export async function deleteGoal(id: string) {
   const { error } = await supabase.from('goals').delete().eq('id', id)
   if (error) {
     console.error('Error deleting goal:', error)
+    throw error
+  }
+}
+
+// Categories
+export async function fetchCategories(userId?: string): Promise<Category[]> {
+  const supabase = getClient()
+  if (!supabase) {
+    return []
+  }
+
+  let query = supabase.from('categories').select('*').order('created_at', { ascending: true })
+
+  if (userId) {
+    query = query.eq('user_id', userId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching categories:', error)
+    return []
+  }
+  return (data as Category[]) || []
+}
+
+export async function insertCategory(c: Omit<Category, 'id' | 'created_at'>) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const { data, error } = await supabase
+    .from('categories')
+    .insert(c)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error inserting category:', error)
+    throw error
+  }
+  return data as Category
+}
+
+export async function deleteCategory(id: string) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const { error } = await supabase.from('categories').delete().eq('id', id)
+  if (error) {
+    console.error('Error deleting category:', error)
     throw error
   }
 }
