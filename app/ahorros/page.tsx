@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FadeIn, PageTransition } from '@/components/Animations'
-import { PiggyBank, Target, TrendingUp, Plus, ArrowLeft, Edit2, Trash2 } from 'lucide-react'
+import { PiggyBank, Target, Plus, ArrowLeft, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useGoalStore } from '@/stores/goals'
 import { GoalForm, AddSavingsForm } from '@/components/GoalForm'
@@ -35,6 +35,10 @@ export default function SavingsPage() {
 
   const completedGoals = goals.filter(g => g.current_amount >= g.target_amount)
   const activeGoals = goals.filter(g => g.current_amount < g.target_amount)
+
+  const handleGoalSuccess = () => {
+    setShowGoalForm(false)
+  }
 
   return (
     <PageTransition>
@@ -264,7 +268,7 @@ export default function SavingsPage() {
                     ✕
                   </button>
                 </div>
-                <GoalForm />
+                <GoalForm onSuccess={handleGoalSuccess} onCancel={() => setShowGoalForm(false)} />
               </motion.div>
             </motion.div>
           )}

@@ -13,14 +13,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showSplash, setShowSplash] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1500)
+    const hasSeenSplash = sessionStorage.getItem('splashShown')
 
-    return () => clearTimeout(timer)
+    if (!hasSeenSplash) {
+      setShowSplash(true)
+      const timer = setTimeout(() => {
+        setShowSplash(false)
+        sessionStorage.setItem('splashShown', 'true')
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   useEffect(() => {
@@ -57,7 +64,7 @@ export default function RootLayout({
               <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-emerald-300/15 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
               <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-teal-300/20 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '1s' }} />
             </div>
-            <SplashScreen isVisible={isLoading} />
+            <SplashScreen isVisible={showSplash} />
             <AuthChecker />
             {children}
           </AuthProvider>

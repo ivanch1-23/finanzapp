@@ -9,7 +9,12 @@ import { Target, DollarSign, Loader2, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from './Animations'
 
-export function GoalForm() {
+interface GoalFormProps {
+  onSuccess?: () => void
+  onCancel?: () => void
+}
+
+export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
   const router = useRouter()
   const { user } = useAuth()
   const add = useGoalStore((s) => s.add)
@@ -17,31 +22,56 @@ export function GoalForm() {
   const [emoji, setEmoji] = useState<string>(EMOJI_OPTIONS[0])
   const [targetAmount, setTargetAmount] = useState('')
   const [saving, setSaving] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name || !targetAmount) return
+
     setSaving(true)
+    setError('')
 
-    await add({
-      user_id: user?.id || '',
-      name,
-      emoji,
-      target_amount: parseFloat(targetAmount),
-      current_amount: 0,
-    })
+    try {
+      await add({
+        user_id: user?.id || '',
+        name,
+        emoji,
+        target_amount: parseFloat(targetAmount),
+        current_amount: 0,
+      })
 
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => {
-      router.push('/ahorros')
-    }, 500)
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        setTimeout(() => {
+          router.replace('/ahorros')
+        }, 300)
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error al crear la meta')
+      setSaving(false)
+    }
+  }
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel()
+    }
   }
 
   return (
     <StaggerContainer className="space-y-5">
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400"
+        >
+          {error}
+        </motion.div>
+      )}
+
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nombre de la meta</label>
         <div className="relative">
@@ -111,46 +141,31 @@ export function GoalForm() {
       </StaggerItem>
 
       <StaggerItem>
-        <motion.button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={saving || !name || !targetAmount}
-          whileTap={{ scale: saving ? 1 : 0.97 }}
-          className="w-full rounded-2xl py-4 text-sm font-bold text-white shadow-lg transition-all bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <AnimatePresence mode="wait">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="flex-1 rounded-2xl border border-slate-200 dark:border-slate-700 py-3 text-sm font-semibold"
+          >
+            Cancelar
+          </button>
+          <motion.button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={saving || !name || !targetAmount}
+            whileTap={{ scale: saving ? 1 : 0.97 }}
+            className="flex-1 rounded-2xl py-4 text-sm font-bold text-white shadow-lg transition-all bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {saving ? (
-              <motion.span
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex items-center justify-center gap-2"
-              >
+              <span className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Creando...
-              </motion.span>
-            ) : success ? (
-              <motion.span
-                key="success"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                ✓ Creando meta...
-              </motion.span>
+              </span>
             ) : (
-              <motion.span
-                key="default"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                Crear meta de ahorro
-              </motion.span>
+              'Crear meta'
             )}
-          </AnimatePresence>
-        </motion.button>
+          </motion.button>
+        </div>
       </StaggerItem>
     </StaggerContainer>
   )
@@ -167,19 +182,23 @@ export function AddSavingsForm({ goalId, goalName, onClose }: AddSavingsFormProp
   const [amount, setAmount] = useState('')
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!amount || parseFloat(amount) <= 0) return
+
     setSaving(true)
+    setError('')
 
-    await updateAmount(goalId, parseFloat(amount))
-
-    setSaving(false)
-    setSuccess(true)
-    setTimeout(() => {
-      onClose()
-    }, 800)
+    try {
+      await updateAmount(goalId, parseFloat(amount))
+      setSuccess(true)
+      setTimeout(onClose, 600)
+    } catch (err: any) {
+      setError(err.message || 'Error al agregar ahorro')
+      setSaving(false)
+    }
   }
 
   return (
@@ -206,6 +225,12 @@ export function AddSavingsForm({ goalId, goalName, onClose }: AddSavingsFormProp
             <X className="h-4 w-4" />
           </button>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
