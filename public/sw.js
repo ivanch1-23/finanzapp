@@ -1,5 +1,5 @@
 const CACHE_NAME = 'finanzapp-v2'
-const urlsToCache = ['/', '/login', '/manifest.json']
+const urlsToCache = ['/', '/manifest.json']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -41,55 +41,4 @@ self.addEventListener('fetch', (event) => {
       })
     })
   )
-})
-
-self.addEventListener('push', (event) => {
-  if (!event.data) return
-
-  let data
-  try {
-    data = event.data.json()
-  } catch {
-    data = { title: 'FinanzApp', body: event.data.text(), icon: '/finanzapplogo.png' }
-  }
-
-  const options = {
-    body: data.body || 'Recordatorio de pago',
-    icon: data.icon || '/finanzapplogo.png',
-    badge: '/finanzapplogo.png',
-    tag: data.tag || 'finanzapp-reminder',
-    data: data.data || {},
-    vibrate: [200, 100, 200],
-    requireInteraction: true,
-    actions: [
-      { action: 'markPaid', title: 'Marcar como pagado' },
-      { action: 'view', title: 'Ver' }
-    ]
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'FinanzApp', options)
-  )
-})
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close()
-
-  if (event.action === 'markPaid') {
-    event.waitUntil(
-      clients.openWindow('/reminders')
-    )
-  } else if (event.action === 'view') {
-    event.waitUntil(
-      clients.openWindow('/reminders')
-    )
-  } else {
-    event.waitUntil(
-      clients.openWindow('/')
-    )
-  }
-})
-
-self.addEventListener('notificationclose', (event) => {
-  console.log('Notification closed:', event.notification.tag)
 })

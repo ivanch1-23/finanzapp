@@ -6,13 +6,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { SplashScreen } from '@/components/SplashScreen'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { AuthChecker } from '@/components/AuthChecker'
-import { usePushNotifications, requestNotificationPermission } from '@/hooks/usePushNotifications'
 import './globals.css'
-
-function NotificationHandler() {
-  usePushNotifications()
-  return null
-}
 
 export default function RootLayout({
   children,
@@ -30,12 +24,10 @@ export default function RootLayout({
   }, [])
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error)
-    }
+    if (typeof window === 'undefined') return
 
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().catch(console.error)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
     }
   }, [])
 
@@ -58,7 +50,6 @@ export default function RootLayout({
       <body className="min-h-screen font-sans antialiased pb-20">
         <ThemeProvider>
           <AuthProvider>
-            <NotificationHandler />
             <div className="fixed inset-0 -z-10">
               <div className="absolute inset-0 bg-gradient-to-br from-sky-100 via-cyan-50 to-teal-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900" />
               <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-300/30 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
