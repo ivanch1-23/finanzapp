@@ -2,12 +2,9 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { PiggyBank, TrendingUp } from 'lucide-react'
-
-interface SavingsCardProps {
-  montoActual: number
-  metaTotal: number
-}
+import { PiggyBank, Plus } from 'lucide-react'
+import { useGoalStore } from '@/stores/goals'
+import { useEffect } from 'react'
 
 const formatoPesos = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -16,11 +13,17 @@ const formatoPesos = new Intl.NumberFormat('es-CO', {
   maximumFractionDigits: 0,
 })
 
-export function SavingsCard({ montoActual, metaTotal }: SavingsCardProps) {
-  const porcentaje = Math.min((montoActual / metaTotal) * 100, 100)
-  const nivelLiq = Math.min(porcentaje, 100)
+export function SavingsCard() {
+  const goals = useGoalStore((s) => s.goals)
+  const load = useGoalStore((s) => s.load)
 
-  const bgLevel = nivelLiq > 0 ? 'bg-gradient-to-t from-emerald-400/30 to-emerald-300/10' : ''
+  useEffect(() => {
+    load()
+  }, [load])
+
+  const totalActual = goals.reduce((sum, g) => sum + g.current_amount, 0)
+  const totalMeta = goals.reduce((sum, g) => sum + g.target_amount, 0)
+  const porcentaje = totalMeta > 0 ? Math.min((totalActual / totalMeta) * 100, 100) : 0
 
   return (
     <Link
@@ -38,26 +41,30 @@ export function SavingsCard({ montoActual, metaTotal }: SavingsCardProps) {
         <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-400/10 blur-xl" />
         <div className="absolute -left-2 -bottom-6 h-16 w-16 rounded-full bg-sky-400/10 blur-lg" />
 
-        <div className="relative flex items-center justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
-                <PiggyBank className="h-4 w-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Mis Ahorros</span>
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
+              <PiggyBank className="h-4 w-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
             </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Mis Ahorros</span>
+          </div>
 
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {formatoPesos.format(montoActual)}
-            </p>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white">
+            {formatoPesos.format(totalActual)}
+          </p>
 
-            <div className="flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-emerald-500" strokeWidth={2} />
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                {porcentaje.toFixed(1)}% de {formatoPesos.format(metaTotal)}
+          <div className="flex items-center gap-1 mt-1">
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              {goals.length} {goals.length === 1 ? 'meta' : 'metas'}
+            </span>
+            {totalMeta > 0 && (
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                · {porcentaje.toFixed(0)}% de {formatoPesos.format(totalMeta)}
               </span>
-            </div>
+            )}
+          </div>
 
+          {totalMeta > 0 && (
             <div className="mt-3 h-2 w-full rounded-full bg-slate-200/50 dark:bg-slate-700/50 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
@@ -66,51 +73,30 @@ export function SavingsCard({ montoActual, metaTotal }: SavingsCardProps) {
                 className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 shadow-sm"
               />
             </div>
-          </div>
+          )}
 
-          <div className="relative ml-4 flex-shrink-0">
-            <div className={`relative ${bgLevel} rounded-2xl p-3 transition-all duration-300`}>
-              <svg width="48" height="56" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 20C8 16 12 12 24 12C36 12 40 16 40 20V44C40 48 36 52 24 52C12 52 8 48 8 44V20Z" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" strokeWidth="2"/>
-                <path d="M4 20C4 14 10 8 24 8C38 8 44 14 44 20" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round"/>
-                <rect x="18" y="4" width="12" height="6" rx="2" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
-
-                {nivelLiq > 0 && (
-                  <motion.rect
-                    initial={{ y: 44, height: 0 }}
-                    animate={{ y: 44 - (nivelLiq * 0.32), height: nivelLiq * 0.32 }}
-                    transition={{ duration: 1.2, ease: 'easeOut' }}
-                    x="10"
-                    width="28"
-                    rx="4"
-                    fill="url(#liquidGradient)"
-                  />
-                )}
-
-                <defs>
-                  <linearGradient id="liquidGradient" x1="24" y1="0" x2="24" y2="1" gradientUnits="ratio">
-                    <stop offset="0%" stopColor="#34D399" stopOpacity="0.6"/>
-                    <stop offset="100%" stopColor="#10B981" stopOpacity="0.8"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              {nivelLiq >= 100 && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white"
-                >
-                  ✓
-                </motion.div>
-              )}
+          {goals.length === 0 && (
+            <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <Plus className="h-3 w-3" />
+              <span>Agrega tu primera meta</span>
             </div>
-          </div>
-        </div>
+          )}
 
-        <div className="mt-3 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
-          <span className="font-medium">Toca para ver detalles</span>
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {goals.slice(0, 3).map((goal) => (
+              <span
+                key={goal.id}
+                className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-1 text-[10px] font-medium"
+              >
+                {goal.emoji} {((goal.current_amount / goal.target_amount) * 100).toFixed(0)}%
+              </span>
+            ))}
+            {goals.length > 3 && (
+              <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-1 text-[10px] font-medium">
+                +{goals.length - 3}
+              </span>
+            )}
+          </div>
         </div>
       </motion.div>
     </Link>

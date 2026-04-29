@@ -1,5 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr'
-import type { Transaction, Reminder } from './types'
+import type { Transaction, Reminder, Goal } from './types'
 import { createClient as createSupabaseClient } from './supabase/client'
 
 function getClient() {
@@ -143,6 +143,80 @@ export async function deleteReminder(id: string) {
   const { error } = await supabase.from('reminders').delete().eq('id', id)
   if (error) {
     console.error('Error deleting reminder:', error)
+    throw error
+  }
+}
+
+// Goals
+export async function fetchGoals(userId?: string): Promise<Goal[]> {
+  const supabase = getClient()
+  if (!supabase) {
+    console.warn('Supabase not configured, returning empty array')
+    return []
+  }
+
+  let query = supabase.from('goals').select('*').order('created_at', { ascending: false })
+
+  if (userId) {
+    query = query.eq('user_id', userId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching goals:', error)
+    return []
+  }
+  return (data as Goal[]) || []
+}
+
+export async function insertGoal(g: Omit<Goal, 'id' | 'created_at'>) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const { data, error } = await supabase
+    .from('goals')
+    .insert(g)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error inserting goal:', error)
+    throw error
+  }
+  return data as Goal
+}
+
+export async function updateGoal(id: string, data: { name?: string; emoji?: string; target_amount?: number; current_amount?: number }) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const updateData: Record<string, unknown> = {}
+  if (data.name !== undefined) updateData.name = data.name
+  if (data.emoji !== undefined) updateData.emoji = data.emoji
+  if (data.target_amount !== undefined) updateData.target_amount = data.target_amount
+  if (data.current_amount !== undefined) updateData.current_amount = data.current_amount
+
+  const { error } = await supabase.from('goals').update(updateData).eq('id', id)
+  if (error) {
+    console.error('Error updating goal:', error)
+    throw error
+  }
+}
+
+export async function deleteGoal(id: string) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const { error } = await supabase.from('goals').delete().eq('id', id)
+  if (error) {
+    console.error('Error deleting goal:', error)
     throw error
   }
 }

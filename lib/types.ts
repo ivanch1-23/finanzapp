@@ -22,6 +22,16 @@ export interface Reminder {
   created_at: string
 }
 
+export interface Goal {
+  id: string
+  user_id: string
+  name: string
+  emoji: string
+  target_amount: number
+  current_amount: number
+  created_at: string
+}
+
 export const CATEGORIES = [
   'Tienda',
   'Personal',
@@ -31,3 +41,5 @@ export const CATEGORIES = [
 ] as const
 
 export type Category = (typeof CATEGORIES)[number]
+
+export const EMOJI_OPTIONS = ['🏠', '🚗', '✈️', '📱', '💻', '🎮', '👕', '🎓', '💍', '🏝️', '🎁', '🎯', '💰', '🏦', '🌴', '⚽', '🎸', '📚', '💊', '👶'] as const

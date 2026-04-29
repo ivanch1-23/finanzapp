@@ -179,7 +179,7 @@ export default function Home() {
 
         {/* Savings Card - Glassmorphism */}
         <FadeIn delay={0.17}>
-          <SavingsCard montoActual={2500000} metaTotal={8000000} />
+          <SavingsCard />
         </FadeIn>
 
         {/* PROXIMOS PAGOS - Glass Panel */}
