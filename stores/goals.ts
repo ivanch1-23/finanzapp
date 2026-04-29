@@ -34,12 +34,18 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
   error: null,
   initialized: false,
   load: async () => {
+    const currentGoals = get().goals
     set({ loading: true, error: null })
     try {
       const userId = await getUserId()
-      const data = await fetchGoals(userId ?? undefined)
+      if (!userId) {
+        set({ loading: false, error: 'Usuario no autenticado' })
+        return
+      }
+      const data = await fetchGoals(userId)
       set({ goals: data, loading: false, initialized: true })
     } catch (e: any) {
+      console.error('Error loading goals:', e)
       set({ error: e.message, loading: false, initialized: true })
     }
   },
