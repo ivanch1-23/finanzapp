@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useReminderStore } from '@/stores/reminders'
-import { Bell, Calendar, DollarSign, Loader2 } from 'lucide-react'
+import { Bell, Calendar, DollarSign, Loader2, Repeat } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from './Animations'
 
@@ -10,6 +10,7 @@ export function ReminderForm() {
   const [title, setTitle] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [amount, setAmount] = useState('')
+  const [isRecurring, setIsRecurring] = useState(false)
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -26,6 +27,7 @@ export function ReminderForm() {
       due_date: dueDate,
       amount: amount ? parseFloat(amount) : null,
       is_paid: false,
+      is_recurring: isRecurring,
     })
 
     setSaving(false)
@@ -34,6 +36,7 @@ export function ReminderForm() {
     setTitle('')
     setDueDate('')
     setAmount('')
+    setIsRecurring(false)
   }
 
   return (
@@ -77,6 +80,33 @@ export function ReminderForm() {
             className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all placeholder:font-medium placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30"
           />
         </div>
+      </StaggerItem>
+
+      <StaggerItem>
+        <button
+          type="button"
+          onClick={() => setIsRecurring(!isRecurring)}
+          className={`w-full flex items-center justify-between rounded-2xl border py-3.5 px-4 transition-all ${
+            isRecurring
+              ? 'border-sky-400 bg-sky-50 dark:bg-sky-900/20 ring-2 ring-sky-400/30'
+              : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-sky-300'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <Repeat className={`h-4 w-4 ${isRecurring ? 'text-sky-500' : 'text-slate-400'}`} />
+            <span className={`text-sm font-medium ${isRecurring ? 'text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300'}`}>
+              Recordatorio recurrente
+            </span>
+          </div>
+          <div className={`w-10 h-6 rounded-full transition-all ${isRecurring ? 'bg-sky-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
+            <div className={`w-5 h-5 rounded-full bg-white shadow-md mt-0.5 transition-all ${isRecurring ? 'ml-4.5' : 'ml-0.5'}`} />
+          </div>
+        </button>
+        {isRecurring && (
+          <p className="mt-1.5 text-xs text-sky-600 dark:text-sky-400 ml-1">
+            Se creará automáticamente cada mes
+          </p>
+        )}
       </StaggerItem>
 
       <StaggerItem>

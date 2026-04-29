@@ -16,9 +16,11 @@ export interface Reminder {
   id: string
   user_id: string
   title: string
+  emoji?: string
   due_date: string
   amount: number | null
   is_paid: boolean
+  is_recurring: boolean
   created_at: string
 }
 

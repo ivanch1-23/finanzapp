@@ -55,6 +55,7 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
       set((state) => ({ goals: [created, ...state.goals] }))
     } catch (e: any) {
       set({ error: e.message })
+      throw e
     }
   },
   updateAmount: async (id, amount) => {
