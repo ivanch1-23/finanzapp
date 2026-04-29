@@ -20,7 +20,7 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 via-cyan-400 to-teal-400"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
     >
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
@@ -30,8 +30,8 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
         <Image
           src="/finanzapplogo.png"
           alt="FinanzApp Logo"
-          width={180}
-          height={180}
+          width={160}
+          height={160}
           className="drop-shadow-2xl"
           priority
         />

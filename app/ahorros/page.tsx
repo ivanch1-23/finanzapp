@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useGoalStore } from '@/stores/goals'
 import { GoalForm, AddSavingsForm } from '@/components/GoalForm'
 import { AnimatePresence } from 'framer-motion'
+import { JarWithLabel } from '@/components/JarProgress'
 
 const formatoPesos = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -153,34 +154,27 @@ export default function SavingsPage() {
                     >
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-full" />
 
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">{goal.emoji}</span>
-                          <div>
-                            <p className="text-sm font-bold text-slate-900 dark:text-white">{goal.name}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                              {formatoPesos.format(goal.current_amount)} / {formatoPesos.format(goal.target_amount)}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{pct.toFixed(0)}%</span>
-                          <button
-                            onClick={() => setAddingToGoal(goal.id)}
-                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
+                      <JarWithLabel
+                        currentAmount={goal.current_amount}
+                        targetAmount={goal.target_amount}
+                        emoji={goal.emoji}
+                      />
 
-                      <div className="h-2 w-full rounded-full bg-slate-200/50 dark:bg-slate-700/50 overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${pct}%` }}
-                          transition={{ duration: 0.8, ease: 'easeOut' }}
-                          className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
-                        />
+                      <div className="absolute right-3 top-3 flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Eliminar esta meta?')) remove(goal.id)
+                          }}
+                          className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setAddingToGoal(goal.id)}
+                          className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
                       </div>
                     </motion.div>
                   )

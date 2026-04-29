@@ -32,6 +32,7 @@ export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
     setSaving(true)
     setError('')
 
+    let success = false
     try {
       await add({
         user_id: user?.id || '',
@@ -40,7 +41,15 @@ export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
         target_amount: parseFloat(targetAmount),
         current_amount: 0,
       })
+      success = true
+    } catch (err: any) {
+      console.error('Goal creation error:', err)
+      setError(err.message || 'Error al crear la meta')
+    }
 
+    setSaving(false)
+
+    if (success && !error) {
       if (onSuccess) {
         onSuccess()
       } else {
@@ -48,9 +57,6 @@ export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
           router.replace('/ahorros')
         }, 300)
       }
-    } catch (err: any) {
-      setError(err.message || 'Error al crear la meta')
-      setSaving(false)
     }
   }
 
