@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 async function getUserId(): Promise<string | null> {
   try {
     const supabase = createClient()
+    if (!supabase) return null
     const { data: { user } } = await supabase.auth.getUser()
     return user?.id ?? null
   } catch {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { motion } from 'framer-motion'
 import { FadeIn } from '@/components/Animations'
@@ -26,6 +26,12 @@ export default function LoginPage() {
     setLoading(true)
 
     const supabase = createClient()
+
+    if (!supabase) {
+      setError('Error de configuración. Contacta al administrador.')
+      setLoading(false)
+      return
+    }
 
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({
@@ -53,9 +59,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-teal-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <main className="min-h-screen bg-gradient-to-br from-sky-100 via-cyan-50 to-teal-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <div className="max-w-md mx-auto p-4">
-        {/* Back button */}
         <FadeIn>
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mt-6 mb-8">
             <ArrowLeft className="h-4 w-4" />
@@ -63,7 +68,6 @@ export default function LoginPage() {
           </Link>
         </FadeIn>
 
-        {/* Logo */}
         <FadeIn delay={0.1}>
           <div className="flex flex-col items-center mb-8">
             <Image
@@ -77,12 +81,11 @@ export default function LoginPage() {
           </div>
         </FadeIn>
 
-        {/* Form Card */}
         <FadeIn delay={0.15}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl bg-white dark:bg-slate-800 shadow-xl p-6"
+            className="rounded-3xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-glass p-6"
           >
             <h2 className="text-xl font-bold text-center mb-6 text-slate-900 dark:text-white">
               {isLogin ? 'Iniciar sesión' : 'Crear cuenta'}
@@ -109,31 +112,29 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email */}
               <div>
                 <label className="mb-1.5 block text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
                   Correo electrónico
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={1.5} />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="tu@correo.com"
                     required
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:focus:ring-sky-900/30"
+                    className="w-full rounded-xl border border-white/20 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm py-3 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:focus:ring-sky-900/30"
                   />
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="mb-1.5 block text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
                   Contraseña
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={1.5} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
@@ -141,19 +142,18 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     required
                     minLength={6}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 pl-12 pr-12 text-sm font-medium outline-none transition-all focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:focus:ring-sky-900/30"
+                    className="w-full rounded-xl border border-white/20 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm py-3 pl-12 pr-12 text-sm font-medium outline-none transition-all focus:border-sky-400 focus:ring-2 focus:ring-sky-100 dark:focus:ring-sky-900/30"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? <EyeOff className="h-4 w-4" strokeWidth={1.5} /> : <Eye className="h-4 w-4" strokeWidth={1.5} />}
                   </button>
                 </div>
               </div>
 
-              {/* Submit */}
               <motion.button
                 type="submit"
                 disabled={loading}
@@ -164,7 +164,6 @@ export default function LoginPage() {
               </motion.button>
             </form>
 
-            {/* Toggle */}
             <div className="mt-6 text-center">
               <button
                 onClick={() => {
