@@ -51,15 +51,14 @@ export function TransactionForm() {
     <StaggerContainer className="space-y-5">
       <StaggerItem>
         <div className="relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 p-1.5">
-          <motion.div
-            layoutId="typeIndicator"
-            className="absolute inset-y-1.5 rounded-xl bg-white dark:bg-slate-700 shadow-sm"
+          <div
+            className="absolute inset-y-1.5 rounded-xl bg-white dark:bg-slate-700 shadow-sm transition-all duration-300 ease-out"
             style={{
-              left: type === 'expense' ? '6px' : 'calc(50% + 6px)',
-              right: type === 'expense' ? undefined : '6px',
-              width: type === 'expense' ? 'calc(50% - 12px)' : 'calc(50% - 12px)',
+              left: '6px',
+              right: '6px',
+              width: 'calc(50% - 12px)',
+              transform: type === 'expense' ? 'translateX(0)' : 'translateX(100%)',
             }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           />
           <div className="relative grid grid-cols-2 gap-1">
             {(['expense', 'income'] as const).map((t) => (

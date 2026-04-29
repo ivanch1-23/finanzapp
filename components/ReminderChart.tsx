@@ -68,10 +68,6 @@ export function ReminderChart({ selectedMonth }: ReminderChartProps) {
     )
   }
 
-  const barCount = sortedByAmount.length
-  const barWidth = Math.min(50, Math.max(24, 180 / barCount))
-  const barGap = Math.max(4, 12 - barCount)
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -86,7 +82,7 @@ export function ReminderChart({ selectedMonth }: ReminderChartProps) {
         </button>
       </div>
 
-      <div className="flex items-end justify-start gap-2 h-40 px-1 overflow-x-auto pb-2">
+      <div className="flex items-end justify-start gap-2 h-44 overflow-x-auto pb-2">
         {sortedByAmount.map((reminder, index) => {
           const heightPercent = maxAmount > 0 ? ((reminder.amount || 0) / maxAmount) * 100 : 0
           const isUrgent = !reminder.is_paid && new Date(reminder.due_date) <= new Date(Date.now() + 24 * 60 * 60 * 1000)
@@ -95,43 +91,36 @@ export function ReminderChart({ selectedMonth }: ReminderChartProps) {
           return (
             <motion.div
               key={reminder.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center gap-1 flex-shrink-0"
-              style={{ width: barWidth }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="flex flex-col items-center gap-1 flex-shrink-0 w-14"
             >
-              <div className="w-full flex flex-col items-center justify-end h-32">
+              <div className="w-full flex flex-col items-center justify-end h-36">
                 <motion.div
                   initial={{ height: 0 }}
-                  animate={{ height: `${Math.max(heightPercent, 8)}%` }}
-                  transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  className={`w-full rounded-t-lg shadow-md relative cursor-pointer transition-transform hover:scale-105 ${
+                  animate={{ height: `${Math.max(heightPercent, 10)}%` }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  className={`w-full max-w-[40px] rounded-t-lg shadow-md cursor-pointer transition-all hover:scale-110 ${
                     isOverdue
                       ? 'bg-gradient-to-t from-rose-500 to-rose-400'
                       : isUrgent
                       ? 'bg-gradient-to-t from-amber-500 to-amber-400'
                       : 'bg-gradient-to-t from-sky-500 to-sky-400'
                   }`}
-                >
-                  {showLabels && reminder.amount && (
-                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-[8px] px-1.5 py-0.5 rounded whitespace-nowrap font-bold">
-                      ${Math.round(reminder.amount / 1000)}k
-                    </div>
-                  )}
-                </motion.div>
+                />
               </div>
 
               <div className="text-center w-full">
-                <span className="text-sm">{extractEmoji(reminder.title)}</span>
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 truncate w-full mt-0.5" title={reminder.title}>
+                <span className="text-base">{extractEmoji(reminder.title)}</span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate w-full" title={reminder.title}>
                   {stripEmoji(reminder.title).substring(0, 5)}
                 </p>
                 {isOverdue && (
-                  <span className="text-[7px] text-rose-500 font-bold">VENCIDO</span>
+                  <span className="text-[8px] text-rose-500 font-bold">VENCIDO</span>
                 )}
                 {isUrgent && !isOverdue && (
-                  <span className="text-[7px] text-amber-500 font-bold">HOY</span>
+                  <span className="text-[8px] text-amber-500 font-bold">HOY</span>
                 )}
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BottomNav } from '@/components/BottomNav'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { SplashScreen } from '@/components/SplashScreen'
@@ -13,20 +13,25 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [isLoading, setIsLoading] = useState(false)
   const [showSplash, setShowSplash] = useState(false)
+  const splashDismissed = useRef(false)
 
   useEffect(() => {
+    if (splashDismissed.current) return
+    
     const hasSeenSplash = sessionStorage.getItem('splashShown')
 
     if (!hasSeenSplash) {
       setShowSplash(true)
       const timer = setTimeout(() => {
         setShowSplash(false)
+        splashDismissed.current = true
         sessionStorage.setItem('splashShown', 'true')
       }, 2000)
 
       return () => clearTimeout(timer)
+    } else {
+      splashDismissed.current = true
     }
   }, [])
 
