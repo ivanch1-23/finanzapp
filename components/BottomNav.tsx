@@ -16,7 +16,7 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-white/20 dark:border-white/10 pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto max-w-md">
         <div className="flex h-16 items-center justify-around px-2 relative">
           {navItems.map((item) => {
@@ -35,7 +35,7 @@ export function BottomNav() {
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               >
                 <div className="absolute inset-0 flex items-center justify-center pt-2">
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-sky-100 to-cyan-50 dark:from-sky-900/40 dark:to-cyan-900/20 shadow-lg shadow-sky-200/50 dark:shadow-sky-900/30" />
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-sky-100 to-cyan-50 dark:from-sky-900/40 dark:to-cyan-900/20 shadow-glass" />
                 </div>
               </motion.div>
             )
@@ -56,9 +56,9 @@ export function BottomNav() {
                 >
                   <item.icon
                     className={`h-6 w-6 transition-colors duration-200 ${
-                      isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400 dark:text-slate-500'
+                      isActive ? 'text-sky-500 dark:text-sky-400' : 'text-slate-400 dark:text-slate-500'
                     }`}
-                    strokeWidth={isActive ? 2.5 : 2}
+                    strokeWidth={isActive ? 2 : 1.5}
                   />
                   {isActive && (
                     <motion.div
