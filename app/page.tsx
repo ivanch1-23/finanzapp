@@ -15,6 +15,7 @@ import { formatCOP } from '@/components/Animations'
 import Link from 'next/link'
 import { isSameMonth } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
+import { SavingsCard } from '@/components/SavingsCard'
 
 export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date())
@@ -174,6 +175,11 @@ export default function Home() {
               )}
             </Link>
           </div>
+        </FadeIn>
+
+        {/* Savings Card - Glassmorphism */}
+        <FadeIn delay={0.17}>
+          <SavingsCard montoActual={2500000} metaTotal={8000000} />
         </FadeIn>
 
         {/* PROXIMOS PAGOS - Glass Panel */}
