@@ -9,7 +9,13 @@ export function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables')
+    console.warn('Missing Supabase environment variables')
+    return null
+  }
+
+  if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+    console.warn('Invalid Supabase URL format:', supabaseUrl)
+    return null
   }
 
   supabaseClient = createBrowserClient(supabaseUrl, supabaseAnonKey)
