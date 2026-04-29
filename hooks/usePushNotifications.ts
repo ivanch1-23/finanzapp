@@ -2,8 +2,7 @@
 
 import { useEffect } from 'react'
 import { useReminderStore } from '@/stores/reminders'
-import { createClient } from '@/lib/supabase/client'
-import { isUrgent, isOverdue } from '@/lib/utils'
+import { isOverdue } from '@/lib/utils'
 
 const NOTIFICATION_KEY = 'finanzapp_last_notified_'
 
@@ -63,13 +62,8 @@ function sendNotification(reminder: any, hoursUntilDue: number) {
       badge: '/finanzapplogo.png',
       tag: `reminder-${reminder.id}`,
       data: { reminderId: reminder.id, url: '/reminders' },
-      vibrate: [200, 100, 200],
       requireInteraction: true,
-      actions: [
-        { action: 'markPaid', title: '✓ Marcar pagado' },
-        { action: 'view', title: 'Ver' }
-      ]
-    })
+    } as NotificationOptions)
   })
 }
 
@@ -86,13 +80,8 @@ function sendOverdueNotification(reminder: any) {
       badge: '/finanzapplogo.png',
       tag: `reminder-overdue-${reminder.id}`,
       data: { reminderId: reminder.id, url: '/reminders' },
-      vibrate: [300, 100, 300, 100, 300],
       requireInteraction: true,
-      actions: [
-        { action: 'markPaid', title: '✓ Marcar pagado' },
-        { action: 'view', title: 'Ver' }
-      ]
-    })
+    } as NotificationOptions)
   })
 }
 
