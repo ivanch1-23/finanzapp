@@ -13,17 +13,20 @@ function getClient() {
 }
 
 // Transactions
-export async function fetchTransactions(): Promise<Transaction[]> {
+export async function fetchTransactions(userId?: string): Promise<Transaction[]> {
   const supabase = getClient()
   if (!supabase) {
     console.warn('Supabase not configured, returning empty array')
     return []
   }
 
-  const { data, error } = await supabase
-    .from('transactions')
-    .select('*')
-    .order('created_at', { ascending: false })
+  let query = supabase.from('transactions').select('*').order('created_at', { ascending: false })
+
+  if (userId) {
+    query = query.eq('user_id', userId)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching transactions:', error)
@@ -65,17 +68,20 @@ export async function deleteTransaction(id: string) {
 }
 
 // Reminders
-export async function fetchReminders(): Promise<Reminder[]> {
+export async function fetchReminders(userId?: string): Promise<Reminder[]> {
   const supabase = getClient()
   if (!supabase) {
     console.warn('Supabase not configured, returning empty array')
     return []
   }
 
-  const { data, error } = await supabase
-    .from('reminders')
-    .select('*')
-    .order('due_date', { ascending: true })
+  let query = supabase.from('reminders').select('*').order('due_date', { ascending: true })
+
+  if (userId) {
+    query = query.eq('user_id', userId)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching reminders:', error)
@@ -110,6 +116,24 @@ export async function updateReminderPaid(id: string, isPaid: boolean) {
   }
 
   const { error } = await supabase.from('reminders').update({ is_paid: isPaid }).eq('id', id)
+  if (error) {
+    console.error('Error updating reminder:', error)
+    throw error
+  }
+}
+
+export async function updateReminder(id: string, data: { title?: string; due_date?: string; amount?: number | null }) {
+  const supabase = getClient()
+  if (!supabase) {
+    throw new Error('Supabase not configured')
+  }
+
+  const updateData: Record<string, unknown> = {}
+  if (data.title !== undefined) updateData.title = data.title
+  if (data.due_date !== undefined) updateData.due_date = data.due_date
+  if (data.amount !== undefined) updateData.amount = data.amount
+
+  const { error } = await supabase.from('reminders').update(updateData).eq('id', id)
   if (error) {
     console.error('Error updating reminder:', error)
     throw error

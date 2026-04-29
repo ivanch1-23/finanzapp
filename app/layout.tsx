@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { BottomNav } from '@/components/BottomNav'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { SplashScreen } from '@/components/SplashScreen'
+import { AuthProvider } from '@/contexts/AuthContext'
 import './globals.css'
 
 export default function RootLayout({
@@ -35,8 +36,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans antialiased pb-20">
         <ThemeProvider>
-          <SplashScreen isVisible={isLoading} />
-          {children}
+          <AuthProvider>
+            <SplashScreen isVisible={isLoading} />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
         <BottomNav />
         <script

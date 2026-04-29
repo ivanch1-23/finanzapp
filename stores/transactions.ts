@@ -3,6 +3,17 @@
 import { create } from 'zustand'
 import type { Transaction } from '@/lib/types'
 import { fetchTransactions, insertTransaction, deleteTransaction } from '@/lib/api'
+import { createClient } from '@/lib/supabase/client'
+
+async function getUserId(): Promise<string | null> {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    return user?.id ?? null
+  } catch {
+    return null
+  }
+}
 
 interface TransactionState {
   transactions: Transaction[]
@@ -20,12 +31,12 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
   error: null,
   initialized: false,
   load: async () => {
-    // Don't refetch if already initialized with data
     if (get().initialized && get().transactions.length > 0) return
 
     set({ loading: true, error: null })
     try {
-      const data = await fetchTransactions()
+      const userId = await getUserId()
+      const data = await fetchTransactions(userId ?? undefined)
       set({ transactions: data, loading: false, initialized: true })
     } catch (e: any) {
       set({ error: e.message, loading: false, initialized: true })
@@ -33,7 +44,11 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
   },
   add: async (tx) => {
     try {
-      const created = await insertTransaction(tx)
+      const userId = await getUserId()
+      if (!userId) {
+        throw new Error('Usuario no autenticado')
+      }
+      const created = await insertTransaction({ ...tx, user_id: userId })
       set((state) => ({ transactions: [created, ...state.transactions] }))
     } catch (e: any) {
       set({ error: e.message })

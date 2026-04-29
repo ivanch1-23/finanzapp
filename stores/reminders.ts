@@ -2,7 +2,18 @@
 
 import { create } from 'zustand'
 import type { Reminder } from '@/lib/types'
-import { fetchReminders, insertReminder, updateReminderPaid, deleteReminder } from '@/lib/api'
+import { fetchReminders, insertReminder, updateReminderPaid, updateReminder, deleteReminder } from '@/lib/api'
+import { createClient } from '@/lib/supabase/client'
+
+async function getUserId(): Promise<string | null> {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    return user?.id ?? null
+  } catch {
+    return null
+  }
+}
 
 interface ReminderState {
   reminders: Reminder[]
@@ -12,6 +23,7 @@ interface ReminderState {
   load: () => Promise<void>
   add: (r: Omit<Reminder, 'id' | 'created_at'>) => Promise<void>
   markPaid: (id: string) => Promise<void>
+  update: (id: string, data: { title?: string; due_date?: string; amount?: number | null }) => Promise<void>
   remove: (id: string) => Promise<void>
 }
 
@@ -25,7 +37,8 @@ export const useReminderStore = create<ReminderState>()((set, get) => ({
 
     set({ loading: true, error: null })
     try {
-      const data = await fetchReminders()
+      const userId = await getUserId()
+      const data = await fetchReminders(userId ?? undefined)
       set({ reminders: data, loading: false, initialized: true })
     } catch (e: any) {
       set({ error: e.message, loading: false, initialized: true })
@@ -33,7 +46,11 @@ export const useReminderStore = create<ReminderState>()((set, get) => ({
   },
   add: async (r) => {
     try {
-      const created = await insertReminder(r)
+      const userId = await getUserId()
+      if (!userId) {
+        throw new Error('Usuario no autenticado')
+      }
+      const created = await insertReminder({ ...r, user_id: userId })
       set((state) => ({ reminders: [created, ...state.reminders] }))
     } catch (e: any) {
       set({ error: e.message })
@@ -45,6 +62,18 @@ export const useReminderStore = create<ReminderState>()((set, get) => ({
       set((state) => ({
         reminders: state.reminders.map((r) =>
           r.id === id ? { ...r, is_paid: true } : r
+        ),
+      }))
+    } catch (e: any) {
+      set({ error: e.message })
+    }
+  },
+  update: async (id, data) => {
+    try {
+      await updateReminder(id, data)
+      set((state) => ({
+        reminders: state.reminders.map((r) =>
+          r.id === id ? { ...r, ...data } : r
         ),
       }))
     } catch (e: any) {

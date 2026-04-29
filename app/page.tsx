@@ -15,8 +15,6 @@ import { formatCOP } from '@/components/Animations'
 import Link from 'next/link'
 import { isSameMonth } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
-
 export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date())
 
@@ -70,7 +68,7 @@ export default function Home() {
           />
         </FadeIn>
 
-        {/* Balance Card - Light Blue gradient */}
+        {/* Balance Card */}
         <FadeIn delay={0.1}>
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -129,7 +127,7 @@ export default function Home() {
           </motion.div>
         </FadeIn>
 
-        {/* Quick Actions - Pastel Green button */}
+        {/* Quick Actions */}
         <FadeIn delay={0.15}>
           <div className="flex gap-3">
             <Link href="/add" className="flex-1">
@@ -156,8 +154,19 @@ export default function Home() {
           </div>
         </FadeIn>
 
-        {/* Transactions */}
+        {/* PROXIMOS PAGOS - First */}
         <FadeIn delay={0.2}>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Próximos pagos</h2>
+            <Link href="/reminders" className="flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline">
+              Ver todo <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <ReminderList limit={5} />
+        </FadeIn>
+
+        {/* MOVIMIENTOS - Second */}
+        <FadeIn delay={0.25}>
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Movimientos</h2>
             <Link href="/history" className="flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline">
@@ -171,19 +180,8 @@ export default function Home() {
               <div className="h-16 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse" />
             </div>
           ) : (
-            <TransactionList limit={10} selectedMonth={selectedMonth} />
+            <TransactionList limit={5} selectedMonth={selectedMonth} />
           )}
-        </FadeIn>
-
-        {/* Reminders */}
-        <FadeIn delay={0.25}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Próximos pagos</h2>
-            <Link href="/reminders" className="flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline">
-              Ver todo <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <ReminderList limit={3} />
         </FadeIn>
 
         <div className="h-4" />
