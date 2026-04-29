@@ -53,8 +53,12 @@ export function TransactionForm() {
         <div className="relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 p-1.5">
           <motion.div
             layoutId="typeIndicator"
-            className="absolute inset-y-1.5 left-1.5 rounded-xl bg-white dark:bg-slate-700 shadow-sm"
-            style={{ width: 'calc(50% - 6px)' }}
+            className="absolute inset-y-1.5 rounded-xl bg-white dark:bg-slate-700 shadow-sm"
+            style={{
+              left: type === 'expense' ? '6px' : 'calc(50% + 6px)',
+              right: type === 'expense' ? undefined : '6px',
+              width: type === 'expense' ? 'calc(50% - 12px)' : 'calc(50% - 12px)',
+            }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           />
           <div className="relative grid grid-cols-2 gap-1">

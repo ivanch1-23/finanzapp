@@ -34,8 +34,6 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
   error: null,
   initialized: false,
   load: async () => {
-    if (get().initialized && get().goals.length > 0) return
-
     set({ loading: true, error: null })
     try {
       const userId = await getUserId()

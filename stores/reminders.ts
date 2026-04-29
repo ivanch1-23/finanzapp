@@ -34,8 +34,6 @@ export const useReminderStore = create<ReminderState>()((set, get) => ({
   error: null,
   initialized: false,
   load: async () => {
-    if (get().initialized && get().reminders.length > 0) return
-
     set({ loading: true, error: null })
     try {
       const userId = await getUserId()
