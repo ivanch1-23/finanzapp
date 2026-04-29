@@ -1,0 +1,64 @@
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
+
+const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0EA5E9"/>
+      <stop offset="50%" style="stop-color:#06B6D4"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#00000033"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="200" r="80" fill="#ffffff" opacity="0.95"/>
+    <path d="M256 160 L280 200 L256 240 L232 200 Z" fill="#0EA5E9"/>
+    <circle cx="256" cy="200" r="20" fill="#10B981"/>
+    <rect x="180" y="290" width="152" height="20" rx="10" fill="#ffffff" opacity="0.9"/>
+    <rect x="180" y="330" width="100" height="16" rx="8" fill="#ffffff" opacity="0.7"/>
+    <rect x="180" y="360" width="130" height="16" rx="8" fill="#ffffff" opacity="0.7"/>
+    <circle cx="380" cy="340" r="35" fill="#ffffff" opacity="0.9"/>
+    <path d="M365 340 L375 350 L395 330" stroke="#10B981" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>`;
+
+async function generateIcons() {
+  const publicDir = path.join(__dirname, '..', 'public');
+
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+
+  const sizes = [192, 512];
+
+  for (const size of sizes) {
+    const outputPath = path.join(publicDir, `icon-${size}x${size}.png`);
+    await sharp(Buffer.from(svgContent))
+      .resize(size, size)
+      .png()
+      .toFile(outputPath);
+    console.log(`Generated: ${outputPath}`);
+  }
+
+  const faviconPath = path.join(publicDir, 'icon-64x64.png');
+  await sharp(Buffer.from(svgContent))
+    .resize(64, 64)
+    .png()
+    .toFile(faviconPath);
+  console.log('Generated: icon-64x64.png');
+
+  const icoPath = path.join(publicDir, 'favicon.ico');
+  await sharp(Buffer.from(svgContent))
+    .resize(32, 32)
+    .png()
+    .toFile(icoPath);
+  console.log('Generated: favicon.ico');
+
+  console.log('All icons generated successfully!');
+}
+
+generateIcons().catch(console.error);

@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTransactionStore } from '@/stores/transactions'
+import { useAuth } from '@/contexts/AuthContext'
 import { CATEGORIES } from '@/lib/types'
 import type { TransactionType, Category } from '@/lib/types'
 import { DollarSign, Tag, Calendar, Repeat, Loader2 } from 'lucide-react'
@@ -9,6 +11,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from './Animations'
 
 export function TransactionForm() {
+  const router = useRouter()
+  const { user } = useAuth()
   const [amount, setAmount] = useState('')
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState<Category>(CATEGORIES[0])
@@ -26,7 +30,7 @@ export function TransactionForm() {
     setSaving(true)
 
     await add({
-      user_id: '00000000-0000-0000-0000-000000000000',
+      user_id: user?.id || '00000000-0000-0000-0000-000000000000',
       amount: parseFloat(amount),
       title,
       category,
@@ -37,15 +41,13 @@ export function TransactionForm() {
 
     setSaving(false)
     setSuccess(true)
-    setTimeout(() => setSuccess(false), 2000)
-    setAmount('')
-    setTitle('')
-    setIsRecurring(false)
+    setTimeout(() => {
+      router.push('/')
+    }, 500)
   }
 
   return (
     <StaggerContainer className="space-y-5">
-      {/* Type Toggle - Sky blue and Teal */}
       <StaggerItem>
         <div className="relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 p-1.5">
           <motion.div
@@ -73,7 +75,6 @@ export function TransactionForm() {
         </div>
       </StaggerItem>
 
-      {/* Amount */}
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monto</label>
         <div className="relative">
@@ -88,7 +89,6 @@ export function TransactionForm() {
         </div>
       </StaggerItem>
 
-      {/* Title */}
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Descripción</label>
         <div className="relative">
@@ -103,7 +103,6 @@ export function TransactionForm() {
         </div>
       </StaggerItem>
 
-      {/* Category */}
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Categoría</label>
         <div className="grid grid-cols-3 gap-2">
@@ -126,7 +125,6 @@ export function TransactionForm() {
         </div>
       </StaggerItem>
 
-      {/* Date */}
       <StaggerItem>
         <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Fecha</label>
         <div className="relative">
@@ -140,7 +138,6 @@ export function TransactionForm() {
         </div>
       </StaggerItem>
 
-      {/* Recurring */}
       <StaggerItem>
         <motion.button
           type="button"
@@ -157,7 +154,6 @@ export function TransactionForm() {
         </motion.button>
       </StaggerItem>
 
-      {/* Submit - Gradient Sky to Teal */}
       <StaggerItem>
         <motion.button
           type="submit"
@@ -190,7 +186,7 @@ export function TransactionForm() {
                 exit={{ opacity: 0 }}
                 className="flex items-center justify-center gap-2"
               >
-                ✓ ¡Guardado!
+                ✓ Redirigiendo...
               </motion.span>
             ) : (
               <motion.span
