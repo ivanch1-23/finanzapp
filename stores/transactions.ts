@@ -21,9 +21,11 @@ interface TransactionState {
   loading: boolean
   error: string | null
   initialized: boolean
+  lastUserId: string | null
   load: () => Promise<void>
   add: (tx: Omit<Transaction, 'id' | 'created_at'>) => Promise<void>
   remove: (id: string) => Promise<void>
+  reset: () => void
 }
 
 export const useTransactionStore = create<TransactionState>()((set, get) => ({
@@ -31,16 +33,20 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
   loading: false,
   error: null,
   initialized: false,
+  lastUserId: null,
   load: async () => {
-    if (get().initialized && get().transactions.length > 0) return
+    const currentUserId = await getUserId()
+    const state = get()
+
+    // Si ya inicializamos para este mismo usuario y tenemos datos, no recargar
+    if (state.initialized && state.lastUserId === currentUserId && state.transactions.length > 0) return
 
     set({ loading: true, error: null })
     try {
-      const userId = await getUserId()
-      const data = await fetchTransactions(userId ?? undefined)
-      set({ transactions: data, loading: false, initialized: true })
+      const data = await fetchTransactions(currentUserId ?? undefined)
+      set({ transactions: data, loading: false, initialized: true, lastUserId: currentUserId })
     } catch (e: any) {
-      set({ error: e.message, loading: false, initialized: true })
+      set({ error: e.message, loading: false, initialized: true, lastUserId: currentUserId })
     }
   },
   add: async (tx) => {
@@ -64,5 +70,8 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     } catch (e: any) {
       set({ error: e.message })
     }
+  },
+  reset: () => {
+    set({ transactions: [], initialized: false, lastUserId: null, error: null })
   },
 }))

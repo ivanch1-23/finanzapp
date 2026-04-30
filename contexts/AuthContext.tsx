@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
+import { useTransactionStore } from '@/stores/transactions'
 
 interface AuthContextType {
   user: User | null
@@ -33,7 +34,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
-      setUser(session?.user ?? null)
+      const newUser = session?.user ?? null
+      // Si cambia el usuario (login/logout/switch), resetear el store de transacciones
+      if (newUser?.id !== user?.id) {
+        useTransactionStore.getState().reset()
+      }
+      setUser(newUser)
       setLoading(false)
     })
 
