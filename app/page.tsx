@@ -58,7 +58,8 @@ export default function Home() {
                 alt="FinanzApp"
                 width={40}
                 height={40}
-                className="rounded-xl"
+                className="rounded-xl w-auto h-auto"
+                priority
               />
             </div>
             <div>

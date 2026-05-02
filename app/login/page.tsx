@@ -75,7 +75,7 @@ export default function LoginPage() {
               alt="FinanzApp"
               width={80}
               height={80}
-              className="rounded-2xl mb-4"
+              className="rounded-2xl mb-4 w-auto h-auto"
             />
             <h1 className="text-2xl font-black text-slate-900 dark:text-white">FinanzApp</h1>
           </div>

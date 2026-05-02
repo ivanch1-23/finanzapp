@@ -52,24 +52,7 @@ export function StaggerContainer({
   className?: string
   staggerDelay?: number
 }) {
-  return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: staggerDelay,
-            delayChildren: 0.1
-          }
-        }
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  )
+  return <div className={className}>{children}</div>
 }
 
 export function StaggerItem({
@@ -80,19 +63,9 @@ export function StaggerItem({
   className?: string
 }) {
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 16 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-        }
-      }}
-      className={className}
-    >
+    <div className={className}>
       {children}
-    </motion.div>
+    </div>
   )
 }
 

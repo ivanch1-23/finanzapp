@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useReminderStore } from '@/stores/reminders'
-import { useEffect } from 'react'
 import { isUrgent, isOverdue } from '@/lib/utils'
 import { Check, AlertTriangle, Clock, Bell, Pencil, X, CalendarClock } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from './Animations'
 import { formatCOP } from './Animations'
-import { Loader2 } from 'lucide-react'
 
 interface Props {
   limit?: number
@@ -26,10 +24,13 @@ export function ReminderList({ limit }: Props = {}) {
   const [editAmount, setEditAmount] = useState('')
   const [editDueDate, setEditDueDate] = useState('')
   const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   useEffect(() => {
-    load()
-  }, [load])
+    if (!hasLoaded && !loading) {
+      load().then(() => setHasLoaded(true))
+    }
+  }, [load, hasLoaded, loading])
 
   let sorted = [...reminders].sort((a, b) => {
     if (a.is_paid !== b.is_paid) return a.is_paid ? 1 : -1
@@ -40,7 +41,8 @@ export function ReminderList({ limit }: Props = {}) {
     sorted = sorted.slice(0, limit)
   }
 
-  if (loading) {
+  // Don't show loading state after initial load
+  if (loading && !hasLoaded) {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (

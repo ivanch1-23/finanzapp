@@ -32,7 +32,7 @@ export function SplashScreen({ isVisible }: SplashScreenProps) {
           alt="FinanzApp Logo"
           width={160}
           height={160}
-          className="drop-shadow-2xl"
+          className="drop-shadow-2xl w-auto h-auto"
           priority
         />
       </motion.div>

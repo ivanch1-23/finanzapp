@@ -16,10 +16,12 @@ const MONTHS_ES = [
 
 export function MonthSelector({ selectedMonth, onMonthChange }: MonthSelectorProps) {
   const [mounted, setMounted] = useState(false)
+  const [displayMonth, setDisplayMonth] = useState('')
   
   useEffect(() => {
     setMounted(true)
-  }, [])
+    setDisplayMonth(`${MONTHS_ES[selectedMonth.getMonth()]} ${selectedMonth.getFullYear()}`)
+  }, [selectedMonth])
   
   const currentMonth = selectedMonth.getMonth()
   const currentYear = selectedMonth.getFullYear()
@@ -47,6 +49,17 @@ export function MonthSelector({ selectedMonth, onMonthChange }: MonthSelectorPro
     onMonthChange(new Date())
   }
 
+  // Prevent hydration mismatch by rendering placeholder until mounted
+  if (!mounted) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6" />
+        <div className="min-w-[160px] h-6 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="w-6 h-6" />
+      </div>
+    )
+  }
+
   return (
     <div className="flex items-center gap-2">
       <button
@@ -67,7 +80,7 @@ export function MonthSelector({ selectedMonth, onMonthChange }: MonthSelectorPro
           className="flex items-center gap-2 min-w-[160px] justify-center"
         >
           <Calendar className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+          <span suppressHydrationWarning className="text-sm font-medium text-slate-700 dark:text-slate-200">
             {MONTHS_ES[currentMonth]} {currentYear}
           </span>
         </motion.div>
@@ -81,7 +94,7 @@ export function MonthSelector({ selectedMonth, onMonthChange }: MonthSelectorPro
         <ChevronRight className="w-4 h-4" />
       </button>
 
-      {mounted && !isCurrentMonth && (
+      {!isCurrentMonth && (
         <button
           onClick={goToToday}
           className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"

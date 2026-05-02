@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTransactionStore } from '@/stores/transactions'
 import { getWeekOfMonth, isSameMonth } from '@/lib/utils'
 import { formatCOP } from './Animations'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Receipt, ArrowUpRight, ArrowDownRight, Repeat, Trash2, CreditCard } from 'lucide-react'
+import { ArrowUpRight, ArrowDownRight, Repeat, Trash2, CreditCard } from 'lucide-react'
 import { StaggerContainer, StaggerItem } from './Animations'
 
 interface Props {
@@ -16,13 +16,10 @@ interface Props {
 export function TransactionList({ limit, selectedMonth }: Props = {}) {
   const transactions = useTransactionStore((s) => s.transactions)
   const load = useTransactionStore((s) => s.load)
-  const remove = useTransactionStore((s) => s.remove)
-  const loading = useTransactionStore((s) => s.loading)
 
   useEffect(() => {
     load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [load])
 
   const filteredTransactions = selectedMonth
     ? transactions.filter(tx => isSameMonth(tx.transaction_date, selectedMonth))
@@ -41,32 +38,12 @@ export function TransactionList({ limit, selectedMonth }: Props = {}) {
     .map(Number)
     .sort((a, b) => a - b)
 
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3].map((i) => (
-          <motion.div
-            key={i}
-            className="h-14 rounded-xl bg-slate-100 dark:bg-slate-700 animate-pulse"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.1 }}
-          />
-        ))}
-      </div>
-    )
-  }
-
   if (filteredTransactions.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 dark:border-slate-700 py-8 text-center"
-      >
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 dark:border-slate-700 py-8 text-center">
         <CreditCard className="h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Sin movimientos en este mes</p>
-      </motion.div>
+      </div>
     )
   }
 
