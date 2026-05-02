@@ -48,48 +48,43 @@ export function MonthSelector({ selectedMonth, onMonthChange }: MonthSelectorPro
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <button
         onClick={goToPrev}
-        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
         aria-label="Mes anterior"
       >
-        <ChevronLeft className="w-5 h-5" />
+        <ChevronLeft className="w-4 h-4" />
       </button>
-
+      
       <AnimatePresence mode="wait">
         <motion.div
           key={`${MONTHS_ES[currentMonth]}-${currentYear}`}
-          initial={{ opacity: 0, y: -5 }}
+          initial={{ opacity: 0, y: -3 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 5 }}
-          transition={{ duration: 0.2 }}
-          className="flex items-center gap-2 min-w-[180px] justify-center"
+          exit={{ opacity: 0, y: 3 }}
+          transition={{ duration: 0.15 }}
+          className="flex items-center gap-2 min-w-[160px] justify-center"
         >
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-lg font-semibold">
+          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
             {MONTHS_ES[currentMonth]} {currentYear}
           </span>
-          {mounted && isCurrentMonth && (
-            <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full">
-              Hoy
-            </span>
-          )}
         </motion.div>
       </AnimatePresence>
 
       <button
         onClick={goToNext}
-        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
         aria-label="Mes siguiente"
       >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronRight className="w-4 h-4" />
       </button>
 
       {mounted && !isCurrentMonth && (
         <button
           onClick={goToToday}
-          className="px-3 py-1.5 text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+          className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
         >
           Hoy
         </button>

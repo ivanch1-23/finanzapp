@@ -55,31 +55,31 @@ export function TransactionForm() {
             <button
               type="button"
               onClick={() => setType('expense')}
-              className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+              className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
                 type === 'expense'
-                  ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
-              ↓ Gasto
+              Gasto
             </button>
             <button
               type="button"
               onClick={() => setType('income')}
-              className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+              className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
                 type === 'income'
-                  ? 'bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
-              ↑ Ingreso
+              Ingreso
             </button>
           </div>
         </div>
       </StaggerItem>
 
       <StaggerItem>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monto</label>
+        <label className="mb-2 block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Monto</label>
         <div className="relative">
           <DollarSign className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
           <input
@@ -87,13 +87,13 @@ export function TransactionForm() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0"
-            className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-4 pl-12 pr-4 text-2xl font-bold outline-none transition-all placeholder:font-normal placeholder:text-3xl placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-4 pl-12 pr-4 text-2xl font-medium outline-none transition-colors placeholder:font-normal placeholder:text-3xl placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:border-slate-400"
           />
         </div>
       </StaggerItem>
 
       <StaggerItem>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Descripción</label>
+        <label className="mb-2 block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Descripción</label>
         <div className="relative">
           <Tag className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
@@ -101,25 +101,25 @@ export function TransactionForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Descripción del gasto"
-            className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm outline-none transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400"
           />
         </div>
       </StaggerItem>
 
       <StaggerItem>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Categoría</label>
+        <label className="mb-2 block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Categoría</label>
         <CategorySelector value={category} onChange={setCategory as (cat: string) => void} />
       </StaggerItem>
 
       <StaggerItem>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Fecha</label>
+        <label className="mb-2 block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fecha</label>
         <div className="relative">
           <Calendar className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3.5 pl-12 pr-4 text-sm outline-none transition-colors focus:border-slate-400"
           />
         </div>
       </StaggerItem>
@@ -127,16 +127,16 @@ export function TransactionForm() {
       <StaggerItem>
         <motion.button
           type="button"
-          whileTap={{ scale: 0.97 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => setIsRecurring(!isRecurring)}
-          className={`flex w-full items-center justify-center gap-2 rounded-2xl border py-3.5 text-sm font-bold transition-all ${
+          className={`flex w-full items-center justify-center gap-2 rounded-xl border py-3.5 text-sm font-medium transition-colors ${
             isRecurring
-              ? 'border-sky-400 bg-sky-100 text-sky-600 dark:border-sky-500 dark:bg-sky-900/30 dark:text-sky-400'
+              ? 'border-slate-400 bg-slate-100 text-slate-700 dark:border-slate-500 dark:bg-slate-800 dark:text-slate-200'
               : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400'
           }`}
         >
-          <Repeat className={`h-4 w-4 ${isRecurring ? 'text-sky-500' : ''}`} />
-          {isRecurring ? '✓ Recurrente activado' : 'Marcar como recurrente'}
+          <Repeat className={`h-4 w-4 ${isRecurring ? 'text-slate-600 dark:text-slate-300' : ''}`} />
+          {isRecurring ? 'Recurrente' : 'Marcar como recurrente'}
         </motion.button>
       </StaggerItem>
 
@@ -145,12 +145,8 @@ export function TransactionForm() {
           type="submit"
           onClick={handleSubmit}
           disabled={saving || !amount || !title}
-          whileTap={{ scale: saving ? 1 : 0.97 }}
-          className={`w-full rounded-2xl py-4 text-sm font-bold text-white shadow-lg transition-all ${
-            type === 'expense'
-              ? 'bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700'
-              : 'bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600'
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
+          whileTap={{ scale: saving ? 1 : 0.98 }}
+          className="w-full rounded-xl bg-slate-900 dark:bg-white py-4 text-sm font-medium text-white dark:text-slate-900 shadow-sm transition-colors hover:bg-slate-800 dark:hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <AnimatePresence mode="wait">
             {saving ? (
@@ -167,11 +163,11 @@ export function TransactionForm() {
             ) : success ? (
               <motion.span
                 key="success"
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
               >
-                ✓ Redirigiendo...
+                Listo
               </motion.span>
             ) : (
               <motion.span
