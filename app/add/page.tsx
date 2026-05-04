@@ -10,8 +10,10 @@ export const dynamic = 'force-dynamic'
 
 export default function AddPage() {
   return (
-    <PageTransition>
+    <PageTransition className="pb-32">
+
       <main className="max-w-md mx-auto p-4 space-y-5">
+
         <FadeIn>
           <div className="flex items-center gap-3">
             <Link href="/">
@@ -34,3 +36,4 @@ export default function AddPage() {
     </PageTransition>
   )
 }
+

@@ -59,7 +59,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen font-sans antialiased bg-slate-50 dark:bg-slate-900">
+      <body className="min-h-screen font-sans antialiased bg-slate-50 dark:bg-slate-900 pb-[max(env(safe-area-inset-bottom),4rem)]">
+
+
         <ThemeProvider>
           <AuthProvider>
             <SplashScreen isVisible={showSplash} />

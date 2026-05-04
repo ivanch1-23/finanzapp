@@ -22,7 +22,8 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="fixed inset-x-0 bottom-6 z-50 flex justify-center">
+    <nav className="fixed inset-x-0 bottom-4 z-[100] flex justify-center">
+
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -78,3 +79,4 @@ export function BottomNav() {
     </nav>
   )
 }
+

@@ -48,7 +48,8 @@ export default function Home() {
 
   return (
     <PageTransition>
-      <main className="max-w-lg mx-auto px-4 pt-6 pb-24 space-y-6">
+<main className="max-w-lg mx-auto px-4 pt-6 pb-24 space-y-6" suppressHydrationWarning>
+
         {/* Header */}
         <FadeIn className="flex items-center justify-between">
           <div className="flex items-center gap-3">

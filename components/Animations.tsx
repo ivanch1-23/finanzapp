@@ -4,13 +4,14 @@ import { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 
-export function PageTransition({ children }: { children: React.ReactNode }) {
+export function PageTransition({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const pathname = usePathname()
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={pathname}
+        className={className}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
@@ -21,6 +22,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     </AnimatePresence>
   )
 }
+
 
 export function FadeIn({
   children,
